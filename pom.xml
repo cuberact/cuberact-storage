@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>org.cuberact</groupId>
+        <artifactId>cuberact-parent</artifactId>
+        <version>1.0.0</version>
+        <relativePath>../cuberact-parent/pom.xml</relativePath>
+    </parent>
+
+    <artifactId>cuberact-storage</artifactId>
+    <version>1.0.0-SNAPSHOT</version>
+    <packaging>jar</packaging>
+
+    <name>cuberact-storage</name>
+    <description>Simple and unified access to files in zip/jar file or directory</description>
+
+    <url>https://github.com/cuberact/cuberact-storage</url>
+
+    <scm>
+        <connection>scm:git:https://github.com/cuberact/cuberact-storage.git</connection>
+        <developerConnection>scm:git:git@github.com:cuberact/cuberact-storage.git</developerConnection>
+        <url>https://github.com/cuberact/cuberact-storage</url>
+    </scm>
+
+    <issueManagement>
+        <system>GitHub</system>
+        <url>https://github.com/cuberact/cuberact-storage/issues</url>
+    </issueManagement>
+
+    <dependencies>
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.mockito</groupId>
+            <artifactId>mockito-core</artifactId>
+            <version>2.12.0</version>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
+</project>
