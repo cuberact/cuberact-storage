@@ -11,7 +11,7 @@ public class ResourceTest {
     @Test
     public void path_FullName_Name_Extension() {
         Resource resource = new Resource(null, Storage.normalizePath("/dir/file.txt"));
-        Assert.assertEquals("dir/file.txt", resource.getPath());
+        Assert.assertEquals("/dir/file.txt", resource.getPath());
         Assert.assertEquals("file.txt", resource.getFullName());
         Assert.assertEquals("file", resource.getName());
         Assert.assertEquals("txt", resource.getExtension());
