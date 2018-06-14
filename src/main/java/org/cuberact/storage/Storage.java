@@ -209,9 +209,9 @@ public class Storage {
 
     static String normalizePath(String path) {
         String normalized = path.replace('\\', '/');
-        if (normalized.startsWith("/")) {
+        /*if (normalized.startsWith("/")) {
             normalized = normalized.substring(1);
-        }
+        }*/
         if (normalized.endsWith("/")) {
             normalized = normalized.substring(0, normalized.length() - 1);
         }
