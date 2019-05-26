@@ -16,14 +16,18 @@
 
 package org.cuberact.storage.deferred;
 
-import java.util.concurrent.*;
+import java.util.concurrent.Delayed;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.RunnableScheduledFuture;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 
 /**
  * @author Michal Nikodim (michal.nikodim@gmail.com)
  */
 public abstract class DeferredTask implements RunnableScheduledFuture<Object> {
 
-    public static long DEFAULT_DELAY_IN_MILLISECONDS = 3000;
+    public static long DEFERRED_DELAY_IN_MILLISECONDS = 3000;
 
     private final long delayInMilliSeconds;
     private RunnableScheduledFuture<?> delegate;

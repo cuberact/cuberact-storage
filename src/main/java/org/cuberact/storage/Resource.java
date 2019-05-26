@@ -19,7 +19,11 @@ package org.cuberact.storage;
 import org.cuberact.storage.deferred.DeferredExecutor;
 import org.cuberact.storage.deferred.DeferredTask;
 
-import java.io.*;
+import java.io.BufferedWriter;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.Reader;
 import java.net.URI;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
@@ -29,6 +33,7 @@ import java.nio.file.Path;
 import java.nio.file.StandardOpenOption;
 import java.util.Objects;
 import java.util.function.Predicate;
+import java.util.function.Supplier;
 
 /**
  * @author Michal Nikodim (michal.nikodim@gmail.com)
@@ -193,8 +198,12 @@ public class Resource {
         writeDeferred(content.toString().getBytes(getStorage().getCharset()));
     }
 
-    public void writeDeferred(byte[] content) {
-        DeferredExecutor.runDeferred(new WriteTask(this, content));
+    public void writeDeferred(final byte[] content) {
+        writeDeferred(new BytesSupplier(content));
+    }
+
+    public void writeDeferred(final Supplier<byte[]> contentProvider) {
+        DeferredExecutor.runDeferred(new WriteTask(this, contentProvider));
     }
 
     void writeInternal(byte[] content, boolean append) {
@@ -242,20 +251,34 @@ public class Resource {
         return StandardOpenOption.CREATE;
     }
 
+    private static class BytesSupplier implements Supplier<byte[]> {
+
+        private final byte[] bytes;
+
+        private BytesSupplier(byte[] bytes) {
+            this.bytes = bytes;
+        }
+
+        @Override
+        public byte[] get() {
+            return bytes;
+        }
+    }
+
     static class WriteTask extends DeferredTask {
 
         final Resource resource;
-        final byte[] content;
+        final Supplier<byte[]> contentProvider;
 
-        WriteTask(Resource resource, byte[] content) {
-            super(DEFAULT_DELAY_IN_MILLISECONDS);
+        WriteTask(Resource resource, Supplier<byte[]> contentProvider) {
+            super(DEFERRED_DELAY_IN_MILLISECONDS);
             this.resource = resource;
-            this.content = content;
+            this.contentProvider = contentProvider;
         }
 
         @Override
         public void run() {
-            resource.writeInternal(content, false);
+            resource.writeInternal(contentProvider.get(), false);
         }
 
         @Override
