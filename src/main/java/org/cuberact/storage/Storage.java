@@ -25,11 +25,21 @@ import java.io.InputStream;
 import java.net.URI;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
-import java.nio.file.*;
+import java.nio.file.FileSystem;
+import java.nio.file.FileVisitResult;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.SimpleFileVisitor;
 import java.nio.file.attribute.BasicFileAttributes;
 import java.nio.file.spi.FileSystemProvider;
 import java.util.AbstractMap.SimpleEntry;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
 import java.util.function.Predicate;
 import java.util.stream.Stream;
 
@@ -76,7 +86,7 @@ public class Storage {
             }
         }
         this.path = Objects.requireNonNull(storagePath, "Path");
-        this.uri = URI.create("file:/" + normalizePath(this.path.toString()));
+        this.uri = createURI("file:/" + normalizePath(this.path.toString()));
         this.type = Objects.requireNonNull(type, "Type");
         this.charset = Objects.requireNonNull(charset);
     }
@@ -149,6 +159,10 @@ public class Storage {
             return Objects.equals(uri, other.uri);
         }
         return false;
+    }
+
+    static URI createURI(String line) {
+        return URI.create(line.replaceAll(" ", "%20"));
     }
 
     <E> E runInStorage(StorageRunner<E> storageRunner) {
