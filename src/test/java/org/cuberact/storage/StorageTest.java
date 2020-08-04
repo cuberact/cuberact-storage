@@ -1,14 +1,8 @@
 package org.cuberact.storage;
 
-import org.junit.Assert;
-import org.junit.Test;
-
-import java.io.ByteArrayInputStream;
-import java.io.CharArrayReader;
-import java.io.IOException;
-
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import java.io.*;
+import org.junit.jupiter.api.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * @author Michal Nikodim (michal.nikodim@gmail.com)
@@ -49,16 +43,16 @@ public class StorageTest {
             storage.getResource("second/bob.txt").write("content", false);
             storage.getResource("second/alice.txt").write("content", false);
 
-            Assert.assertEquals(1, storage.findResources("john.txt").size());  //john.txt
-            Assert.assertEquals(2, storage.findResources("**/john.txt").size()); //first/john.txt, second/john.txt
-            Assert.assertEquals(3, storage.findResources("**john.txt").size()); //john.txt, first/john.txt, second/john.txt
-            Assert.assertEquals(6, storage.findResources("**o*.txt").size()); //john.txt, first/john.txt, second/john.txt, bob.txt, first/bob.txt, second/bob.txt
+            assertEquals(1, storage.findResources("john.txt").size());  //john.txt
+            assertEquals(2, storage.findResources("**/john.txt").size()); //first/john.txt, second/john.txt
+            assertEquals(3, storage.findResources("**john.txt").size()); //john.txt, first/john.txt, second/john.txt
+            assertEquals(6, storage.findResources("**o*.txt").size()); //john.txt, first/john.txt, second/john.txt, bob.txt, first/bob.txt, second/bob.txt
 
-            Assert.assertNotNull(storage.findResource("alice.txt"));
+            assertNotNull(storage.findResource("alice.txt"));
 
             try {
                 storage.findResource("**bob.txt");
-                Assert.fail("expected more than one resource by glob **bob.txt");
+                fail("expected more than one resource by glob **bob.txt");
             } catch (StorageException e) {
                 //ok
             }
@@ -84,8 +78,8 @@ public class StorageTest {
             resource.write("B", true);
             resource.write("C", true);
             assertTrue(resource.exists());
-            Assert.assertEquals("ABC", resource.readToString());
-            Assert.assertEquals("ABC", new String(resource.readToBytes()));
+            assertEquals("ABC", resource.readToString());
+            assertEquals("ABC", new String(resource.readToBytes()));
 
             byte[] fromIs = resource.readFromInputStream(is -> {
                 byte[] bytesFromStream = new byte[3];
@@ -93,16 +87,16 @@ public class StorageTest {
                 return bytesFromStream;
             });
 
-            Assert.assertEquals("ABC", new String(fromIs));
+            assertEquals("ABC", new String(fromIs));
 
             resource.write("DEF".getBytes(), true);
             resource.write(new ByteArrayInputStream("GHI".getBytes()), true);
             resource.write(new CharArrayReader("JKL".toCharArray()), true);
-            Assert.assertEquals("ABCDEFGHIJKL", resource.readToString());
+            assertEquals("ABCDEFGHIJKL", resource.readToString());
 
             resource.write("XYZ", false);
             assertTrue(resource.exists());
-            Assert.assertEquals("XYZ", resource.readToString());
+            assertEquals("XYZ", resource.readToString());
 
             assertTrue(storage.exists());
         } finally {

@@ -6,13 +6,12 @@
 
     <parent>
         <groupId>org.cuberact</groupId>
-        <artifactId>cuberact-parent</artifactId>
-        <version>1.0.2</version>
-        <relativePath>../cuberact-parent/pom.xml</relativePath>
+        <artifactId>cuberact-parent-kotlin</artifactId>
+        <version>1.0.0</version>
     </parent>
 
     <artifactId>cuberact-storage</artifactId>
-    <version>1.1.1</version>
+    <version>2.0.0</version>
     <packaging>jar</packaging>
 
     <name>cuberact-storage</name>
@@ -31,17 +30,35 @@
         <url>https://github.com/cuberact/cuberact-storage/issues</url>
     </issueManagement>
 
-    <dependencies>
-        <dependency>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.mockito</groupId>
-            <artifactId>mockito-core</artifactId>
-            <version>2.12.0</version>
-            <scope>test</scope>
-        </dependency>
-    </dependencies>
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.moditect</groupId>
+                <artifactId>moditect-maven-plugin</artifactId>
+                <version>1.0.0.RC1</version>
+                <executions>
+                    <execution>
+                        <id>add-module-infos</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>add-module-info</goal>
+                        </goals>
+                        <configuration>
+                            <jvmVersion>14</jvmVersion>
+                            <module>
+                                <moduleInfo>
+                                    <name>cuberact.storage</name>
+                                    <exports>*;</exports>
+                                </moduleInfo>
+                            </module>
+                            <jdepsExtraArgs>
+                                <arg>--multi-release</arg>
+                                <arg>14</arg>
+                            </jdepsExtraArgs>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
 </project>
