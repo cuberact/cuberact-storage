@@ -30,35 +30,4 @@
         <url>https://github.com/cuberact/cuberact-storage/issues</url>
     </issueManagement>
 
-    <build>
-        <plugins>
-            <plugin>
-                <groupId>org.moditect</groupId>
-                <artifactId>moditect-maven-plugin</artifactId>
-                <version>1.0.0.RC1</version>
-                <executions>
-                    <execution>
-                        <id>add-module-infos</id>
-                        <phase>package</phase>
-                        <goals>
-                            <goal>add-module-info</goal>
-                        </goals>
-                        <configuration>
-                            <jvmVersion>14</jvmVersion>
-                            <module>
-                                <moduleInfo>
-                                    <name>cuberact.storage</name>
-                                    <exports>*;</exports>
-                                </moduleInfo>
-                            </module>
-                            <jdepsExtraArgs>
-                                <arg>--multi-release</arg>
-                                <arg>14</arg>
-                            </jdepsExtraArgs>
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin>
-        </plugins>
-    </build>
 </project>
