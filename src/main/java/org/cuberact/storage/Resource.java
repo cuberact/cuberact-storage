@@ -16,13 +16,11 @@
 
 package org.cuberact.storage;
 
-import org.cuberact.storage.deferred.DeferredExecutor;
-import org.cuberact.storage.deferred.DeferredTask;
-
 import java.io.BufferedWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.OutputStream;
 import java.io.Reader;
 import java.net.URI;
 import java.nio.ByteBuffer;
@@ -34,6 +32,8 @@ import java.nio.file.StandardOpenOption;
 import java.util.Objects;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
+import org.cuberact.storage.deferred.DeferredExecutor;
+import org.cuberact.storage.deferred.DeferredTask;
 
 /**
  * @author Michal Nikodim (michal.nikodim@gmail.com)
@@ -192,6 +192,30 @@ public class Resource {
 
     public void write(InputStream content, boolean append) {
         write(new InputStreamReader(content, getStorage().getCharset()), append);
+    }
+
+    public void writeBinary(InputStream inputStream) {
+        DeferredExecutor.runImmediately(matcher);
+        storage.runInStorage(fs -> {
+            Path writePath = fs.getPath(path);
+            try {
+                Files.createDirectories(writePath.getParent());
+            } catch (IOException e) {
+                throw new StorageException(e);
+            }
+            try (OutputStream outputStream = Files.newOutputStream(writePath, getOpenOption(false))) {
+                byte[] buffer = new byte[4096];
+                int n;
+                while ((n = inputStream.read(buffer)) != -1) {
+                    outputStream.write(buffer, 0, n);
+                }
+                return null;
+            } catch (IOException e) {
+                throw new StorageException(e);
+            } finally {
+                Storage.closeQuietly(inputStream);
+            }
+        });
     }
 
     public void writeDeferred(CharSequence content) {
