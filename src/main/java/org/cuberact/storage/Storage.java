@@ -16,34 +16,19 @@
 
 package org.cuberact.storage;
 
-import org.cuberact.storage.deferred.DeferredExecutor;
-import org.cuberact.storage.deferred.DeferredTask;
-
-import java.io.Closeable;
-import java.io.IOException;
-import java.io.InputStream;
-import java.net.URI;
-import java.nio.charset.Charset;
-import java.nio.charset.StandardCharsets;
+import java.io.*;
+import java.net.*;
+import java.nio.charset.*;
 import java.nio.file.FileSystem;
-import java.nio.file.FileVisitResult;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.nio.file.SimpleFileVisitor;
-import java.nio.file.attribute.BasicFileAttributes;
-import java.nio.file.spi.FileSystemProvider;
-import java.util.AbstractMap.SimpleEntry;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.function.Predicate;
-import java.util.stream.Stream;
-
-import static java.util.stream.Collectors.toMap;
+import java.nio.file.*;
+import java.nio.file.attribute.*;
+import java.nio.file.spi.*;
+import java.util.AbstractMap.*;
+import java.util.*;
+import java.util.function.*;
+import java.util.stream.*;
+import org.cuberact.storage.deferred.*;
+import static java.util.stream.Collectors.*;
 
 /**
  * @author Michal Nikodim (michal.nikodim@gmail.com)
@@ -221,15 +206,21 @@ public class Storage {
     private static final Map<String, String> ZIP_ENV = Stream.of(new SimpleEntry<>("create", "true"))
             .collect(toMap(SimpleEntry::getKey, SimpleEntry::getValue));
 
-    static String normalizePath(String path) {
+    public static String normalizePath(String path) {
         String normalized = path.replace('\\', '/');
-        /*if (normalized.startsWith("/")) {
-            normalized = normalized.substring(1);
-        }*/
         if (normalized.endsWith("/")) {
             normalized = normalized.substring(0, normalized.length() - 1);
         }
         return normalized;
+    }
+
+    public static String joinPaths(String... paths){
+        StringBuilder sb = new StringBuilder("");
+        for (int i = 0; i < paths.length; i++) {
+            if (i > 0) sb.append("/");
+            sb.append(normalizePath(paths[i]));
+        }
+        return sb.toString();
     }
 
     private static List<Resource> collectChildren(Storage storage, Path path, GlobMatcher globMatcher) {
