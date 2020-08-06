@@ -106,17 +106,17 @@ public class Resource {
     }
 
     public boolean exists() {
-        DeferredExecutor.runImmediately(matcher);
+        ifWriteWaitingThenRunImmediately();
         return storage.exists() && storage.runInStorage(fs -> Files.exists(fs.getPath(path)));
     }
 
     public long size() {
-        DeferredExecutor.runImmediately(matcher);
+        ifWriteWaitingThenRunImmediately();
         return storage.runInStorage(fs -> Files.size(fs.getPath(path)));
     }
 
     public void delete() {
-        DeferredExecutor.runImmediately(matcher);
+        ifWriteWaitingThenRunImmediately();
         storage.runInStorage(fs -> {
             Storage.delete(fs.getPath(path));
             return null;
@@ -124,7 +124,7 @@ public class Resource {
     }
 
     public byte[] readToBytes() {
-        DeferredExecutor.runImmediately(matcher);
+        ifWriteWaitingThenRunImmediately();
         return storage.runInStorage(fs -> {
             try {
                 return Files.readAllBytes(fs.getPath(path));
@@ -147,7 +147,7 @@ public class Resource {
     }
 
     public <E> E readFromInputStream(InputStreamProcessor<E> processor) {
-        DeferredExecutor.runImmediately(matcher);
+        ifWriteWaitingThenRunImmediately();
         return storage.runInStorage(fs -> {
             try (InputStream inputStream = Files.newInputStream(fs.getPath(path))) {
                 return processor.read(inputStream);
@@ -162,7 +162,7 @@ public class Resource {
     }
 
     public void write(Reader content, boolean append) {
-        DeferredExecutor.runImmediately(matcher);
+        ifWriteWaitingThenRunImmediately();
         storage.runInStorage(fs -> {
             Path writePath = fs.getPath(path);
             try {
@@ -186,7 +186,7 @@ public class Resource {
     }
 
     public void write(byte[] content, boolean append) {
-        DeferredExecutor.runImmediately(matcher);
+        ifWriteWaitingThenRunImmediately();
         writeInternal(content, append);
     }
 
@@ -195,7 +195,7 @@ public class Resource {
     }
 
     public void writeBinary(InputStream inputStream) {
-        DeferredExecutor.runImmediately(matcher);
+        ifWriteWaitingThenRunImmediately();
         storage.runInStorage(fs -> {
             Path writePath = fs.getPath(path);
             try {
@@ -216,6 +216,10 @@ public class Resource {
                 Storage.closeQuietly(inputStream);
             }
         });
+    }
+
+    public void ifWriteWaitingThenRunImmediately() {
+        DeferredExecutor.runImmediately(matcher);
     }
 
     public void writeDeferred(CharSequence content) {
