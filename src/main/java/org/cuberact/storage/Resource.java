@@ -40,6 +40,8 @@ import org.cuberact.storage.deferred.DeferredTask;
  */
 public class Resource {
 
+    private static final String ps = isWindows() ? "/" : "//";
+
     private final Storage storage;
     private final String path;
     private URI uri;
@@ -66,9 +68,9 @@ public class Resource {
     public URI getUri() {
         if (uri == null) {
             if (getStorage().getType() == StorageType.ZIP) {
-                this.uri = Storage.createURI("jar://file://" + Storage.normalizePath(getStorage().getPath().toString()) + "!/" + path);
+                this.uri = Storage.createURI("jar:" + ps + "file:" + ps + Storage.normalizePath(getStorage().getPath().toString()) + "!/" + path);
             } else {
-                this.uri = Storage.createURI("file://" + Storage.normalizePath(getStorage().getPath().resolve(path).toString()));
+                this.uri = Storage.createURI("file:" + ps + Storage.normalizePath(getStorage().getPath().resolve(path).toString()));
             }
         }
         return uri;
@@ -323,5 +325,9 @@ public class Resource {
         public String toString() {
             return resource.getUri().toString();
         }
+    }
+
+    private static Boolean isWindows() {
+        return System.getProperty("os.name").toLowerCase().contains("win");
     }
 }
