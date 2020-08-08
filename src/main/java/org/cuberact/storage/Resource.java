@@ -66,9 +66,9 @@ public class Resource {
     public URI getUri() {
         if (uri == null) {
             if (getStorage().getType() == StorageType.ZIP) {
-                this.uri = Storage.createURI("jar:/file:/" + Storage.normalizePath(getStorage().getPath().toString()) + "!/" + path);
+                this.uri = Storage.createURI("jar://file://" + Storage.normalizePath(getStorage().getPath().toString()) + "!/" + path);
             } else {
-                this.uri = Storage.createURI("file:/" + Storage.normalizePath(getStorage().getPath().resolve(path).toString()));
+                this.uri = Storage.createURI("file://" + Storage.normalizePath(getStorage().getPath().resolve(path).toString()));
             }
         }
         return uri;
