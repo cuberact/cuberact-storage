@@ -14,7 +14,7 @@
     <version>2.0.0</version>
     <packaging>jar</packaging>
 
-    <name>cuberact-storage</name>
+    <name>cuberact.storage</name>
     <description>Simple and unified access to files in zip/jar file or directory</description>
 
     <url>https://github.com/cuberact/cuberact-storage</url>
